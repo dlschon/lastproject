@@ -53,14 +53,14 @@ public class Book {
 	    }
 	}
 	
-	public Book(String title, String author, Genre genre)
+	public Book(String title, String author, Genre genre, String imageURL)
 	{
 		this.title = title;
 		this.author = author;
 		this.genre = genre;
 
 		// Load book cover image
-		URL res_bc = getClass().getResource("bookcover.jpg");
+		URL res_bc = getClass().getResource(imageURL);
 		try {
 			bookcover = ImageIO.read(res_bc);
 		} catch (IOException e) {

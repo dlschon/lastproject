@@ -601,20 +601,31 @@ public final class Stage6
 
 			// add some example data
 			bookList = new ArrayList<Book>();
-			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE));
-			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION));
-			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION));
-
-			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE));
-			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION));
-			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION));
-
-			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE));
-			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION));
-			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION));
+			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book1.jpg"));
+			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book2.jpg"));
+			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book3.jpg"));
+			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book4.jpg"));
+			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book5.jpg"));
+			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book6.jpg"));
+			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book7.jpg"));
+			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book8.jpg"));
+			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book9.jpg"));
+			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book10.jpg"));
+			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book11.jpg"));
+			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book12.jpg"));
+			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book13.jpg"));
+			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book14.jpg"));
+			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book15.jpg"));
+			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book16.jpg"));
+			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book17.jpg"));
+			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book18.jpg"));
+			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book19.jpg"));
+			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book20.jpg"));
+			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book21.jpg"));
+			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book22.jpg"));
+			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book23.jpg"));
+			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book24.jpg"));
+			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book25.jpg"));
 
 			numPages = ((int) (bookList.size() / booksPerPage)) + 1;
 		}
