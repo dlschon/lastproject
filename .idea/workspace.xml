@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="87d7dc04-39b4-413e-bd49-d3d79b9ddcb8" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/Build/ou-cs-hci/src/main/java/edu/ou/cs/hci/stages/Book.java" afterPath="$PROJECT_DIR$/Build/ou-cs-hci/src/main/java/edu/ou/cs/hci/stages/Book.java" />
-      <change beforePath="$PROJECT_DIR$/Build/ou-cs-hci/src/main/java/edu/ou/cs/hci/stages/Stage6.java" afterPath="$PROJECT_DIR$/Build/ou-cs-hci/src/main/java/edu/ou/cs/hci/stages/Stage6.java" />
-    </list>
+    <list default="true" id="87d7dc04-39b4-413e-bd49-d3d79b9ddcb8" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,8 +24,8 @@
       <file leaf-file-name="Stage6.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Build/ou-cs-hci/src/main/java/edu/ou/cs/hci/stages/Stage6.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="672">
-              <caret line="627" column="103" lean-forward="false" selection-start-line="627" selection-start-column="103" selection-end-line="627" selection-end-column="103" />
+            <state relative-caret-position="5838">
+              <caret line="618" column="30" lean-forward="false" selection-start-line="618" selection-start-column="30" selection-end-line="618" selection-end-column="30" />
               <folding>
                 <element signature="e#0#25768#0" expanded="true" />
                 <element signature="imports" expanded="true" />
@@ -473,8 +470,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Build/ou-cs-hci/src/main/java/edu/ou/cs/hci/stages/Stage6.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="627" column="103" lean-forward="false" selection-start-line="627" selection-start-column="103" selection-end-line="627" selection-end-column="103" />
+        <state relative-caret-position="5838">
+          <caret line="618" column="30" lean-forward="false" selection-start-line="618" selection-start-column="30" selection-end-line="618" selection-end-column="30" />
           <folding>
             <element signature="e#0#25768#0" expanded="true" />
             <element signature="imports" expanded="true" />
