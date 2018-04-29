@@ -1,7 +1,7 @@
 @if "%DEBUG%" == "" @echo off
 @rem ##########################################################################
 @rem
-@rem  build-test startup script for Windows
+@rem  stage7 startup script for Windows
 @rem
 @rem ##########################################################################
 
@@ -13,7 +13,7 @@ if "%DIRNAME%" == "" set DIRNAME=.
 set APP_BASE_NAME=%~n0
 set APP_HOME=%DIRNAME%..
 
-@rem Add default JVM options here. You can also use JAVA_OPTS and BUILD_TEST_OPTS to pass JVM options to this script.
+@rem Add default JVM options here. You can also use JAVA_OPTS and STAGE7_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS="-Xms128m" "-Xmx768m" "-noclassgc" "-Dfile.encoding=utf-8" "-Dapple.laf.useScreenMenuBar=false" "-Dapple.awt.showGrowBox=true" "-Dapple.awt.brushMetalLook=false" "-Dapple.awt.antialiasing=on" "-Dapple.awt.graphics.UseQuartz=true"
 
 @rem Find java.exe
@@ -65,17 +65,17 @@ set CMD_LINE_ARGS=%*
 
 set CLASSPATH=%APP_HOME%\lib\ou-cs-hci-1.0.0.jar;%APP_HOME%\lib\commons-csv-1.5.jar
 
-@rem Execute build-test
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %BUILD_TEST_OPTS%  -classpath "%CLASSPATH%" edu.ou.cs.hci.stages.BuildTest %CMD_LINE_ARGS%
+@rem Execute stage7
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %STAGE7_OPTS%  -classpath "%CLASSPATH%" edu.ou.cs.hci.stages.Stage7 %CMD_LINE_ARGS%
 
 :end
 @rem End local scope for the variables with windows NT shell
 if "%ERRORLEVEL%"=="0" goto mainEnd
 
 :fail
-rem Set variable BUILD_TEST_EXIT_CONSOLE if you need the _script_ return code instead of
+rem Set variable STAGE7_EXIT_CONSOLE if you need the _script_ return code instead of
 rem the _cmd.exe /c_ return code!
-if  not "" == "%BUILD_TEST_EXIT_CONSOLE%" exit 1
+if  not "" == "%STAGE7_EXIT_CONSOLE%" exit 1
 exit /b 1
 
 :mainEnd
