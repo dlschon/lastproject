@@ -1,0 +1,2 @@
+Due to the nature of our application, no changes were made to the library. As an ereader, it wouldn't make sense for our application to edit the books.
+However, the application generate a csv file based on the contents of the library.

@@ -1,1 +1,0 @@
-My implementation is very close to my team's vision. All of the colors we chose are used where we specified, and the grouping and component positioning works how we wanted. I even made sure that the submenus comply to our color standards. Overall, I am happy with how the interface turned out.

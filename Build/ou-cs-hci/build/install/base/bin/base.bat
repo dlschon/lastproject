@@ -63,7 +63,7 @@ set CMD_LINE_ARGS=%*
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\ou-cs-hci-1.0.0.jar
+set CLASSPATH=%APP_HOME%\lib\ou-cs-hci-1.0.0.jar;%APP_HOME%\lib\commons-csv-1.5.jar
 
 @rem Execute base
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %BASE_OPTS%  -classpath "%CLASSPATH%" edu.ou.cs.hci.example.Base %CMD_LINE_ARGS%

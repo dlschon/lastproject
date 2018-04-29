@@ -15,6 +15,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.BufferedWriter;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.imageio.ImageIO;
@@ -23,8 +25,11 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.util.stream.Collectors;
+import org.apache.commons.csv.*;	// New library for working with CSVs
+import java.util.Iterator;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-public final class Stage6
+public final class Stage7
 {
 	// colors used in the UI
 	private static Color menuBackgroundColor = new Color(236, 238, 243);
@@ -40,8 +45,21 @@ public final class Stage6
 	public static Color ICEBERG = new Color(0x71A6D2);
 	public static Color UCLA_GOLD = new Color(0xFFB300);
 
+	public static boolean hasBeenChanged = false;
+
 	// title of the application
 	private static String title;
+
+	public static String[]	COLUMNS =
+			{
+					"Title",
+					"Author",
+					"Series",
+					"Rating",
+					"Year",
+					"Genre",
+					"ImageURL",
+			};
 
 	/**
 	 * Main method that creates and displays the frames
@@ -51,6 +69,7 @@ public final class Stage6
 	public static void main(String[] args)
 	{
 		title = "eReader";
+
 
 		// creates the two frames
 		JFrame	frame = new JFrame(title);
@@ -79,11 +98,96 @@ public final class Stage6
 					System.out.print("This button will load a .csv file and set the user’s library data.\n\n");
 				}
 				else if(buttonName.equals("Open")){
-					System.out.print("This button will open a .epub file that the \nuser selects from the finder window.\n\n");
+
+					// Open a open file dialog and try to load a file
+					try {
+						JFileChooser chooser = new JFileChooser();
+						FileNameExtensionFilter filter = new FileNameExtensionFilter(
+								"Comma separated values files", "csv");
+						chooser.setFileFilter(filter);
+						int returnVal = chooser.showOpenDialog(frame);
+						if (returnVal == JFileChooser.APPROVE_OPTION) {
+							loadCSV(chooser.getSelectedFile().toURI().toURL(), (BooksPanel) centerPanel);
+						}
+					}
+					catch (Exception ex)
+					{
+						JOptionPane.showMessageDialog(frame, "Failed to load file.");
+					}
 				}
 				else if(buttonName.equals("Save")){
-					System.out.print("This button will save all markup (pen, highlight,\neraser, and comment) on the " +
-							"current text and will display it when the current text \nis opened again.\n\n");
+
+				    // Open a save file dialog and try to save the file
+					try {
+						JFileChooser chooser = new JFileChooser();
+						chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+						FileNameExtensionFilter filter = new FileNameExtensionFilter(
+								"Comma separated values files", "csv");
+						chooser.setFileFilter(filter);
+						int returnVal = chooser.showSaveDialog(frame);
+						if (returnVal == JFileChooser.APPROVE_OPTION) {
+							saveCSV(chooser.getSelectedFile().getAbsolutePath(), (BooksPanel) centerPanel);
+						}
+					}
+					catch (Exception ex)
+					{
+						JOptionPane.showMessageDialog(frame, "Failed to save file.");
+					}
+				}
+				else if(buttonName.equals("Quit")){
+
+					// Warn the user about unsaved changes
+					if (hasBeenChanged)
+					{
+						//Custom button text
+						Object[] options = {"Quit without saving",
+								"Cancel",
+								"Save and quit"};
+						int n = JOptionPane.showOptionDialog(frame,
+								"You have unsaved changes. Do you still want to quit?",
+								"Unsaved changes",
+								JOptionPane.YES_NO_CANCEL_OPTION,
+								JOptionPane.QUESTION_MESSAGE,
+								null,
+								options,
+								options[2]);
+
+						// User selected quit without saving
+						if (n == 0)
+						{
+							System.exit(0);
+						}
+
+						// User selected cancel
+						if (n == 1)
+						{
+
+						}
+
+						// User selected save and quit
+						if (n == 2)
+						{
+						    // Open a save dialog and try to save the file
+							try {
+								JFileChooser chooser = new JFileChooser();
+								chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+								FileNameExtensionFilter filter = new FileNameExtensionFilter(
+										"Comma separated values files", "csv");
+								chooser.setFileFilter(filter);
+								int returnVal = chooser.showSaveDialog(frame);
+								if (returnVal == JFileChooser.APPROVE_OPTION) {
+									saveCSV(chooser.getSelectedFile().getAbsolutePath(), (BooksPanel) centerPanel);
+								}
+							}
+							catch (Exception ex)
+							{
+								JOptionPane.showMessageDialog(frame, "Failed to save file.");
+							}
+						}
+					}
+					else
+						// No changes. Just exit
+						System.exit(0);
 				}
 				else if(buttonName.equals("Print")){
 					System.out.print("This button will print the current page \nof text displayed on the screen.\n\n");
@@ -172,6 +276,7 @@ public final class Stage6
 				KeyEvent.VK_T);
 		quitMenuItem.setBackground(STORMY_SKIES);
 		fileMenu.add(quitMenuItem);
+		quitMenuItem.addActionListener(buttonPressed);
 
 		// builds the edit menu
 		JMenu editMenu = new JMenu("Edit");
@@ -267,17 +372,6 @@ public final class Stage6
 		menuItem17.setBackground(STORMY_SKIES);
 		helpMenu.add(menuItem17);
 		menuItem17.addActionListener(buttonPressed);
-
-		// creates an action listener for the Quit option under the file menu; upon clicking, triggers the 10 functions
-		// our group created by using doClick() and prints the results to a file called "menu-actions.txt"
-		ActionListener quitButtonPressed = new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		};
-		quitMenuItem.addActionListener(quitButtonPressed);
 
 		frame.setJMenuBar(menuBar);
 
@@ -569,6 +663,86 @@ public final class Stage6
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
+	// Save a csv file based on the current library
+	public static void saveCSV(String filename, BooksPanel pan)
+	{
+		try {
+
+			// Create a file
+			File fout = new File(filename);
+
+			// Error if the file exists
+			if (fout.exists())
+				throw new Exception();
+
+			FileOutputStream fos = new FileOutputStream(fout);
+
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+			for (Book b : pan.bookList) {
+				bw.write(b.getCSVLine());
+				bw.newLine();
+			}
+
+			bw.close();
+		}
+		catch (Exception ex)
+		{
+			JOptionPane.showMessageDialog(null, "Failed to save file.");
+		}
+	}
+
+	// Load the library from a given csv file
+	public static void loadCSV(URL url, BooksPanel pan) {
+
+		pan.clearLibrary();
+		try {
+			// Create a reader for the CSV
+			InputStream is = url.openStream();
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader r = new BufferedReader(isr);
+
+			// Use the Apache Commons CSV library to read records from it
+			CSVFormat format = CSVFormat.DEFAULT;
+			CSVParser parser = CSVParser.parse(r, format);
+			java.util.List<CSVRecord> records = parser.getRecords();
+
+			// Allocate a 2-D array to keep the rows and columns in memory
+			String[][] values = new String[records.size()][COLUMNS.length];
+
+			for (CSVRecord record : records)    // Loop over the rows...
+			{
+				Iterator<String> k = record.iterator();
+				int i = (int) record.getRecordNumber() - 1;
+				int j = 0;        // Column number
+
+				// Print each record to the console
+				System.out.println("***** #" + i + " *****");
+
+				while (k.hasNext())            // Loop over the columns...
+				{
+					values[i][j] = k.next();    // Grab each cell's value
+
+					// Print each value to the console...
+					System.out.println(COLUMNS[j] + " = " + values[i][j]);
+					j++;
+				}
+
+				Book b = new Book(values[i][0], values[i][1], values[i][2], values[i][3], values[i][4], values[i][5], values[i][6]);
+				pan.addBook(b);
+
+				System.out.println();
+
+			}
+
+			is.close();
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(null, "Failed to load file.");
+			pan.clearLibrary();
+			ex.printStackTrace();
+		}
+	}
+
 	/**
 	 * Class that defines the BooksPanel component of the frame
 	 */
@@ -601,46 +775,32 @@ public final class Stage6
 
 			// add some example data
 			bookList = new ArrayList<Book>();
-			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book1.jpg"));
-			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book2.jpg"));
-			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book3.jpg"));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book4.jpg"));
-			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book5.jpg"));
-			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book6.jpg"));
-			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book7.jpg"));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book8.jpg"));
-			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book9.jpg"));
-			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book10.jpg"));
-			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book11.jpg"));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book12.jpg"));
-			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book13.jpg"));
-			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book14.jpg"));
-			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book15.jpg"));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book16.jpg"));
-			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book17.jpg"));
-			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book18.jpg"));
-			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book19.jpg"));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book20.jpg"));
-			bookList.add(new Book("Pride and Prejudice", "Jane Austen", Book.Genre.ROMANCE, "book21.jpg"));
-			bookList.add(new Book("The Bible", "God", Book.Genre.RELIGION, "book22.jpg"));
-			bookList.add(new Book("1984", "George Orwell", Book.Genre.SCIENCE_FICTION, "book23.jpg"));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book24.jpg"));
-			bookList.add(new Book("The Great Gatsby", "F. Scott Fitzgerald", Book.Genre.FICTION, "book25.jpg"));
 
 			numPages = ((int) (bookList.size() / booksPerPage)) + 1;
+		}
+
+		public void addBook(Book book)
+		{
+			hasBeenChanged = true;
+		    bookList.add(book);
+			repaint();
+			numPages = ((int) (bookList.size() / booksPerPage)) + 1;
+		}
+
+		public void clearLibrary()
+		{
+			bookList.clear();
 		}
 
 		public void prevPage()
 		{
 			if (pageNum > 0) pageNum--;
-			System.out.println(pageNum);
 			repaint();
 		}
 
 		public void nextPage()
 		{
 		    if (pageNum < numPages - 1) pageNum++;
-			System.out.println(pageNum);
 			repaint();
 		}
 
@@ -687,11 +847,15 @@ public final class Stage6
 					// draw the book covers
 					g.drawImage(book.bookcover, bookX, bookY, null);
 
+					String drawTitle = book.title;
+					if (drawTitle.length() > 16)
+						drawTitle = drawTitle.substring(0, 14) + "...";
+
 					// draws book info underneath
 					g.setColor(Color.WHITE);
 					g.setFont(bookFont);
 					drawStringCentered(g,
-							book.title,
+							drawTitle,
 							bookX,
 							bookY + BOOK_HEIGHT + BOOK_MARGIN * 2,
 							BOOK_WIDTH);
