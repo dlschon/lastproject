@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.io.FileOutputStream;
 import java.io.BufferedWriter;
@@ -28,8 +29,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.csv.*;	// New library for working with CSVs
 import java.util.Iterator;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import java.awt.Desktop;
 
-public final class Stage7
+public final class Stage8
 {
 	// colors used in the UI
 	private static Color menuBackgroundColor = new Color(236, 238, 243);
@@ -228,6 +232,16 @@ public final class Stage7
 			}
 		};
 
+		ActionListener aboutButtonPressed = new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+				loadHTML(Resources.getResource("about/about.html"));
+            }
+        };
+
+	
 		// creates the menu bar
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBackground(ROBIN_EGG);
@@ -262,6 +276,12 @@ public final class Stage7
 		menuItem4.setBackground(STORMY_SKIES);
 		fileMenu.add(menuItem4);
 		menuItem4.addActionListener(buttonPressed);
+		
+		JMenuItem menuItem18 = new JMenuItem("About",
+				KeyEvent.VK_T);
+		menuItem18.setBackground(STORMY_SKIES);
+		fileMenu.add(menuItem18);
+		menuItem18.addActionListener(aboutButtonPressed);
 
 		// adds a separator to the file menu
 		fileMenu.addSeparator();
@@ -742,6 +762,60 @@ public final class Stage7
 			ex.printStackTrace();
 		}
 	}
+	
+	public static void loadHTML(URL url) {
+		
+		JEditorPane info;
+		
+		try
+		{
+			// Try to load the about.html file in resources
+			info = new JEditorPane(url);
+			
+			
+			// Setting the editor pane size to  the html layout
+			info.setEditable(false);
+			info.setPreferredSize(new Dimension(400, 400));
+			info.addHyperlinkListener(new HyperlinkListener() {
+				public void hyperlinkUpdate(HyperlinkEvent e){
+					try
+					{
+						if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+							String url = e.getURL().toString();
+							Desktop.getDesktop().browse(URI.create(url));
+						}
+					}
+					catch (Exception pingu)
+					{}
+				}
+			});
+		}
+		catch (Exception ex)
+		{
+			// If loading fails, use a default message
+			info = new JEditorPane("text/plain", "[Loading info failed.]");
+		}
+		
+		
+		JFrame htmlFrame = new JFrame();
+		htmlFrame.setSize(900, 600);
+		
+	
+		htmlFrame.add(new JScrollPane(info), BorderLayout.CENTER);
+		htmlFrame.show();
+		
+		JButton closeButton = new JButton("Close");
+		closeButton.setSize(80, 40);
+		closeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				htmlFrame.dispose();
+			}
+		});
+		
+		htmlFrame.add(closeButton, BorderLayout.SOUTH);
+	}
+	
 
 	/**
 	 * Class that defines the BooksPanel component of the frame
